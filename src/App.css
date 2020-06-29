@@ -1,3 +1,18 @@
 .App {
-  text-align: center;
+  display: flex;
+  padding: 5vh;
+}
+
+.App__container {
+
+}
+
+.todolist__title {
+  background-color: gold;
+}
+
+.todolist__items {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
