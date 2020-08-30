@@ -62,7 +62,6 @@ function Todolist(props: PropsType) {
 
             <AddItemForm addItem={addTask}/>
             <ul>
-
                 {props.allTasks.map(t => {
                     const onButtonClickHandler = () => {
                         props.deleteTask(props.id, t.id);

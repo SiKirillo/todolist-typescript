@@ -13,15 +13,19 @@ export function EditableSpan(props: EditableSpanPropsType) {
     const activateEditMode = () => {
         setEditMode(true);
         setTitle(props.title);
-    }
+    };
+
     const activateViewMode = () => {
         setEditMode(false);
-        props.spanOnChange(title);
-    }
+
+        if (title.trim() !== "") {
+            props.spanOnChange(title);
+        }
+    };
 
     const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value);
-    }
+    };
 
     return editMode
         ? <TextField value={title}
