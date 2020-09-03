@@ -1,7 +1,6 @@
 import {v1} from "uuid";
-import {TaskType} from "../todolist/Todolist";
-import {TasksStateType} from "../App";
-import {addTodolistAC, deleteTodolistAC} from "./todolist-reducer";
+import {TasksStateType, TaskType} from "../todolist/Todolist";
+import {addTodolistAC, deleteTodolistAC, todoListId1, todoListId2} from "./todolist-reducer";
 
 export type ActionsType =
     ReturnType<typeof addTaskAC>
@@ -45,7 +44,24 @@ export const changeTaskStatusAC = (todolistId: string, taskId: string, taskIsDon
     } as const
 }
 
-export const taskReducer = (state: TasksStateType, action: ActionsType): TasksStateType => {
+const initialState: TasksStateType = {
+    [todoListId1]: [
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "React", isDone: false},
+        {id: v1(), title: "Rest API", isDone: false},
+        {id: v1(), title: "GraphQL", isDone: false}
+    ],
+    [todoListId2]: [
+        {id: v1(), title: "Java1", isDone: true},
+        {id: v1(), title: "Java2", isDone: true},
+        {id: v1(), title: "Java3", isDone: false},
+        {id: v1(), title: "Java4", isDone: false},
+        {id: v1(), title: "Java5", isDone: false}
+    ]
+};
+
+export const taskReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
     switch (action.type) {
         case "ADD-TASK": {
             let newState: TasksStateType = {...state};
@@ -67,19 +83,13 @@ export const taskReducer = (state: TasksStateType, action: ActionsType): TasksSt
         case "CHANGE-TASK-TITLE" : {
             let newState: TasksStateType = {...state};
             let tasks: Array<TaskType> = newState[action.todolistId];
-            let changedTask: TaskType | undefined = tasks.find(t => t.id === action.taskId);
-            if (changedTask) {
-                changedTask.title = action.taskTitle;
-            }
+            newState[action.todolistId] = tasks.map(t => t.id === action.taskId ? {...t, title: action.taskTitle} : t);
             return newState;
         }
         case "CHANGE-TASK-STATUS" : {
             let newState: TasksStateType = {...state};
             let tasks: Array<TaskType> = newState[action.todolistId];
-            let changedTask: TaskType | undefined = tasks.find(t => t.id === action.taskId);
-            if (changedTask) {
-                changedTask.isDone = action.isDone;
-            }
+            newState[action.todolistId] = tasks.map(t => t.id === action.taskId ? {...t, isDone: action.isDone} : t);
             return newState;
         }
         case "ADD-TODOLIST" : {
@@ -93,7 +103,7 @@ export const taskReducer = (state: TasksStateType, action: ActionsType): TasksSt
             return newState;
         }
         default: {
-            throw new Error("Error");
+            return state;
         }
     }
 }

@@ -38,7 +38,15 @@ export const changeTodolistFilterAC = (todolistId: string, todolistFilter: Filte
     } as const
 }
 
-export const todolistReducer = (state: Array<TodolistType>, action: ActionsType): Array<TodolistType> => {
+export const todoListId1 = v1();
+export const todoListId2 = v1();
+
+const initialState: Array<TodolistType> = [
+    {id: todoListId1, title: "Technologies", filter: "all"},
+    {id: todoListId2, title: "Nano machines", filter: "all"}
+];
+
+export const todolistReducer = (state: Array<TodolistType> = initialState, action: ActionsType): Array<TodolistType> => {
     switch (action.type) {
         case "ADD-TODOLIST": {
             let newState: Array<TodolistType> = [...state];
@@ -56,22 +64,16 @@ export const todolistReducer = (state: Array<TodolistType>, action: ActionsType)
         }
         case "CHANGE-TODOLIST-TITLE" : {
             let newState: Array<TodolistType> = [...state];
-            let changedTodolist: TodolistType | undefined = newState.find(tl => tl.id === action.todolistId);
-            if (changedTodolist) {
-                changedTodolist.title = action.todolistTitle;
-            }
-            return [...newState];
+            newState = newState.map(tl => tl.id === action.todolistId ? {...tl, title: action.todolistTitle} : tl);
+            return newState;
         }
         case "CHANGE-TODOLIST-FILTER" : {
             let newState: Array<TodolistType> = [...state];
-            let changedTodolist: TodolistType | undefined = newState.find(tl => tl.id === action.todolistId);
-            if (changedTodolist) {
-                changedTodolist.filter = action.filter;
-            }
-            return [...newState];
+            newState = newState.map(tl => tl.id === action.todolistId ? {...tl, filter: action.filter} : tl);
+            return newState;
         }
         default: {
-            throw new Error("Error");
+            return state;
         }
     }
 }
